@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from .serializer import ProfileSerializer
-from .helper_functions import create_temp, delete_file
+from .helper_functions import check_for_valid_string, create_temp, delete_file
 from .face_recog_functions import encode_face, extract_face, generate_feed
 from .exceptions import NoFaceFound
 from .models import Profile
@@ -16,14 +16,18 @@ from django.http import StreamingHttpResponse
 @api_view(['POST'])
 def registerProfile(request):
     data = request.data
+  
+    data = check_for_valid_string(data)
     id_image = request.FILES.get('id_image')
     selfie_image = request.FILES.get('selfie_image')
-    
     filepath_id = create_temp(id_image)
     filepath_selfie = create_temp(selfie_image)
     
+    
     try:
         id_image_path = extract_face(filepath_id,data,"ID")
+        if(id_image_path == 0 ):
+            print("Dir for given name already exists, please contact the admin!")
 
         delete_file(filepath_id)
     except NoFaceFound: 
@@ -43,7 +47,7 @@ def registerProfile(request):
         id_image = id_image_path,
         selfie_image = selfie_image_path,
     )
-    encode_face('static/images/'+data['name']+"/",data['name'],profile.profile_id)
+    encode_face('static/images/'+data['name']+ "_" + data['surname']+"/",data['name'],profile.profile_id)
     serializer = ProfileSerializer(profile,many= False)
     return Response(serializer.data)
 

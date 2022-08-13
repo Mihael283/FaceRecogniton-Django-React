@@ -3,7 +3,7 @@ import pickle
 import mediapipe as mp
 import cv2
 
-from .helper_functions import create_dir
+from .helper_functions import create_dir, delete_all, mark_detection
 from .exceptions import NoFaceFound, TypeUnknown
 import face_recognition
 from .models import Profile
@@ -29,10 +29,10 @@ def extract_face(filepath,data,type):
             raise NoFaceFound
         else:
             if type == 'ID':
-                desc = data['name']+ "/" +data['name'] + "_id.jpg"
+                desc = data['name']+"_"+data['surname'] + "/" +data['name'] + "_id.jpg"
                 img_name = os.path.join(static_path,desc)
             elif type == 'SELFIE':
-                desc = data['name']+ "/" +data['name'] + "_selfie.jpg"
+                desc = data['name']+ "_"+data['surname'] + "/" +data['name'] + "_selfie.jpg"
                 img_name = os.path.join(static_path,desc)
             else:
                 raise TypeUnknown
@@ -46,7 +46,8 @@ def extract_face(filepath,data,type):
                 width = int(bbox.width * img.shape[1])
                 height = int(bbox.height * img.shape[0])
                 roi=img[ymin-10:ymin+height+10,xmin-10:xmin+width+10]
-            create_dir(static_path,data['name'])
+
+            create_dir(static_path,data['name']+"_"+data['surname'])
             cv2.imwrite(img_name, roi)
             return img_name
 
@@ -102,7 +103,7 @@ def generate_feed(camera):
                     face_locations = [(ytop,xright,ybot,xleft)]
                     cv2.rectangle(img, (xleft,ytop),(xright,ybot) ,color, thickness)
                     face_names = recognize_face(face_locations,img,known_face_encodings,known_face_names)
-                    print(face_names)
+                    mark_detection(face_names)
                 except TypeError:
                     cv2.putText(img, "No face detected", (50,50),font, 1.0, (255, 255, 255), 1)
                 except Exception as e:
@@ -137,7 +138,8 @@ def load_profiles():
         for i in range(len(profile.encodings)):
             known_face_encodings.append(profile.encodings[i])
         for i in range(len(profile.encodings)):
-            known_face_names.append(profile.name)
+            person = profile.name + " " + profile.surname
+            known_face_names.append(person)
 
     return known_face_encodings,known_face_names
     
