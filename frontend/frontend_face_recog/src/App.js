@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Button from 'react-bootstrap/Button'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import Stack from 'react-bootstrap/Stack';
 
 class App extends Component {
 
@@ -28,6 +34,10 @@ class App extends Component {
     })
   };
 
+  check = (e) =>{
+    console.log("AAA")
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     console.log(this.state);
@@ -50,29 +60,35 @@ class App extends Component {
 
   render() {
     return (
+      <Stack gap={2} className="col-md-5 mx-auto">
       <div className="App">
-        <form onSubmit={this.handleSubmit}>
-          <p>
-            <input type="text" placeholder='Name' id='name' value={this.state.name} onChange={this.handleChange} required/>
-          </p>
-          <p>
-            <input type="text" placeholder='Surname' id='surname' value={this.state.surname} onChange={this.handleChange} required/>
+        <Form onSubmit={this.handleSubmit}>
+          <Form.Group className="mb-3" controlId="name" >
+            <Form.Label>Name</Form.Label>
+            <Form.Control type="text" placeholder="Enter Name" id = "name" value={this.state.name} onChange={this.handleChange} required/>
+          </Form.Group>
 
-          </p>
-          <p>
-            <input type="file"
-                   id="id_image"
-                   accept="image/png, image/jpeg"  onChange={this.handleIdImageChange} required/>
-          </p>
+          <Form.Group className="mb-3" controlId="surname" value={this.state.surname}>
+            <Form.Label>Surname</Form.Label>
+            <Form.Control type="text" placeholder="Enter Surname" id = "surname" value={this.state.surname} onChange={this.handleChange} required/>
+          </Form.Group>
 
-          <p>
-            <input type="file"
-                   id="selfie_image"
-                   accept="image/png, image/jpeg"  onChange={this.handleSelfieImageChange} required/>
-          </p>
-          <input type="submit"/>
-        </form>
+          <Form.Group className="mb-3" controlId="id_image" accept="image/png, image/jpeg">
+            <Form.Label>ID Image</Form.Label>
+            <Form.Control type="file" placeholder="Upload ID Image" id = "id_image" onChange={this.handleIdImageChange} required/>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="selfie_image" accept="image/png, image/jpeg">
+            <Form.Label>Selfie Image</Form.Label>
+            <Form.Control type="file" placeholder="Upload Selfie Image" id = "selfie_image" onChange={this.handleSelfieImageChange} required/>
+          </Form.Group>
+
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
       </div>
+      </Stack>
     );
   }
 }
