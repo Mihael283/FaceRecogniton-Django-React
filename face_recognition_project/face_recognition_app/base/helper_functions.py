@@ -38,13 +38,8 @@ def check_for_valid_string(data):
 def delete_all():
     Detections.objects.all().delete()
 
-
-
 """
 Funkcija koja se koristi za dodavanje detekcija u bazu poodataka tocnije spremanje novih detekcija u bazu
-
-NOTE: testiraj funkcionalnost sa vise osoba unutar baze
-TODO: testiraj funkcionalnost sa vise osoba unutar baze
 
 Params: face_names -> array imena napravljenih u funkciji recognize_face, koristi se za dodavanje u bazu
     
@@ -60,7 +55,6 @@ def mark_detection(face_names):
     detections = Detections.objects.filter(time__range = [d,tz.now()])
     if not detections:
         for name in face_names:
-            print(name)
             if(name == "Unknown"):
 
                 det = Detections.objects.create(
@@ -80,7 +74,6 @@ def mark_detection(face_names):
                 det.save()
     else:
         for name in face_names:
-            print(name)
             if(name == "Unknown"):
                 pass
             elif(detections.filter(name = name.split()[0], surname = name.split()[1]).exists()):

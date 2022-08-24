@@ -15,7 +15,7 @@ static_path = 'static/images/'
 mp_face_detection = mp.solutions.face_detection
 mp_drawing = mp.solutions.drawing_utils
 
-face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.7,model_selection=1)
+face_detection = mp_face_detection.FaceDetection(min_detection_confidence=0.6,model_selection=1)
 
 def extract_face(filepath,data,type):
     with mp_face_detection.FaceDetection(
@@ -169,6 +169,7 @@ def recognize_face(face_locations,img,known_face_encodings,known_face_names):
 
             face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
             best_match_index = np.argmin(face_distances)
+            print(face_distances)
             if matches[best_match_index]:
                 name = known_face_names[best_match_index]
 
